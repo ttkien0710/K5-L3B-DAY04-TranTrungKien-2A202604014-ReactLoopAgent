@@ -58,9 +58,32 @@ Cause: the original prompt did not explicitly forbid inferring service status fr
 - Kiểm tra offline: 37/37 tests pass. Lỗi tool trả lại model; lỗi provider kết thúc run; output length không được xem là completed.
 - Script `scripts/run_reliable_evals.py` gọi runner chính thức với timeout 180 giây và tối đa 2 retry cho lỗi truyền tải tạm thời; cùng chính sách cho before/after. Không thay dataset hoặc grading. Retry có thể làm tăng chi phí thực so với usage ghi trong kết quả.
 
-## 4. So sánh hai lần chạy
+## 4. Comparison of real runs
 
-Đang chờ hai báo cáo đầy đủ từ model thật. Chưa kết luận hiệu quả cải tiến khi chưa có cả hai điểm tổng khác null. Không thay điểm unscored bằng 0.
+| Metric | Before | After |
+|---|---:|---:|
+| Score /100 | 95.45 | 98.18 |
+| Scored cases | 22 | 22 |
+| H7 | 50 | 100 |
+| H2 | 50 | 100 |
+| H6 | 100 | 60 |
+| Model calls | 52 | 59 |
+| Agent tokens | 50597 | 70517 |
+| Judge tokens | 41605 | 42755 |
+
+Identical config:
+```json
+{
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "judge_provider": "gemini",
+  "judge_model": "gemini-3.5-flash-lite",
+  "max_steps": 8,
+  "dataset": "core"
+}
+```
+
+H7 now reports Cloudflare unverified after timeout. H2 now checks status as well as the historical incident. H6 regressed to 60 because both tools were called in one model step; the mechanical check requires at least two different tool steps. The judge gave raw 100 but the code cap is 60. This is a remaining limitation; no grading or result was changed. Reported usage excludes unreported failed transport attempts; monetary cost is unavailable.
 
 ## 5. Giới hạn
 
