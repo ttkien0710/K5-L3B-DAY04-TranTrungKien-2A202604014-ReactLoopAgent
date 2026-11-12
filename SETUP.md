@@ -28,3 +28,10 @@
 - Chưa xác nhận lại API hoạt động trong phiên này; chưa đánh dấu toàn bộ CP1 hoàn tất.
 - Đặt các biến môi trường trong terminal chạy bài; không commit hoặc chia sẻ API key. Chương trình không tự đọc `.env`.
 - Sau khi push mốc setup, tiếp tục CP2–CP3 với code đã giữ lại. CP4 cần eval đủ 22 case và điểm tổng khác `null` trước khi phân tích cải tiến.
+## Xác nhận bổ sung ngày 12/11/2026
+
+- Đã gọi Gemini thật bằng model `gemini-3.5-flash-lite`; key giữ trong `.env` bị Git ignore.
+- CP2–CP3 được kiểm chứng qua trace thật của baseline và unit tests.
+- CP4: `eval_before.json` được chấm đủ 22/22 case, điểm tổng 95.45/100.
+- Runner bổ sung: `scripts/run_reliable_evals.py`, chạy runner chính thức với timeout 180 giây, tối đa 2 retry khi gặp lỗi truyền tải tạm thời. Dùng cùng chính sách cho before/after.
+- Code baseline vẫn được giữ local trong `agent copy.py`; bản nộp sử dụng `agent.py`.
