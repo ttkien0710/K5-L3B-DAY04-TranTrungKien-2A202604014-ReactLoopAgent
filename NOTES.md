@@ -97,3 +97,38 @@ H7 now reports Cloudflare unverified after timeout. H2 now checks status as well
 ## Demo và nộp bài
 
 Mở case E1 để trình bày các event model/tool và tool-call ID, sau đó H7 để đối chiếu timeout với answer. Giải thích việc giữ nguyên assistant message và trả đủ mọi tool result trước lượt model kế tiếp. Người học cần tự trình bày code và tự nộp link repo trên LMS theo SUBMISSION.md.
+
+## Bonus: triển khai và giới hạn
+
+- Agent dùng `tools.schemas` và `tools.system_prompt` khi có, fallback về bài chính. Không hard-code ID incident hoặc câu trả lời.
+- Năm status tools của GitHub, Cloudflare, Vercel, npm và DigitalOcean được cung cấp sẵn; agent trả mọi observation về model với đúng call ID.
+- `INVALID_ARGUMENTS` được trả để model sửa kiểu `offset`, `limit` theo schema; không tự đoán và đổi tham số của model.
+- Với `RATE_LIMITED`, một operation (tool name + arguments) được gọi thật tối đa hai lần liên tiếp trước khi trả observation hết retry budget. `Retry-After` được đọc theo số giây hoặc HTTP-date. Chỉ chờ tối đa 5 giây mỗi lần và 10 giây mỗi run; nếu lâu hơn thì báo chưa xác minh thay vì gọi liên tục. `max_steps` vẫn giới hạn tổng model calls.
+- Model được hướng dẫn đọc `next_offset` khi câu hỏi cần timeline ở trang sau, không nói đã đọc hết khi còn trang. Giữ nguyên dữ liệu tool để không bỏ mất bằng chứng; model lọc 160 notices nhiễu theo câu hỏi và bỏ qua chỉ dẫn giả từ tool output. Chưa có cơ chế nén context tự động.
+- Dẫn URL nguồn và timestamp riêng theo provider, phân biệt incident lịch sử với snapshot. 429 không phải outage. Giới hạn kiểm tra URL vẫn chỉ yêu cầu có ít nhất một incident URL đã quan sát.
+- Tests: 39 tests trong `tests/`, 3 tests trong `bonus/` đều pass. Hai tests thêm kiểm tra giới hạn gọi tool thật khi model cố retry và việc không chờ khi Retry-After vượt budget.
+- Hai báo cáo before/after bài chính thuộc mốc CP4–CP6; thay đổi bonus được thực hiện sau các báo cáo đó và được kiểm chứng riêng bằng tests/eval bonus.
+
+### K?t qu? eval bonus
+
+- Ch?m ?? 10/10 case; ?i?m 94.0/100; bonus tham kh?o 14.1/15.
+- Model calls: 28; agent tokens: 56044; judge tokens: 30908. Kh?ng c? chi ph? ti?n trong report.
+- C?u h?nh: Gemini / gemini-3.5-flash-lite cho agent v? judge, snapshot bonus, max_steps 16, workers 1; ch?y b?ng scripts/run_reliable_evals.py.
+
+| Case | Score |
+|---|---:|
+| B1 | 100 |
+| B2 | 100 |
+| B3 | 100 |
+| B4 | 100 |
+| B5 | 100 |
+| B6 | 50 |
+| B7 | 100 |
+| B8 | 90 |
+| B9 | 100 |
+| B10 | 100 |
+
+- B6 c?n l?i: model ch? g?i status c?a hai provider, kh?ng g?i get_incident_details. Judge raw 95 nh?ng mechanical cap 50. ??y l? gi?i h?n c?a l?a ch?n tool b?i model; ch?a c? validation b?t bu?c ??c chi ti?t khi so s?nh incident.
+- B8: judge ch?m 90 v? nh?n x?t URL Vercel kh?ng ??ng. URL incident th?c t? quan s?t: https://stspg.io/txrkbrvfl4bz, https://stspg.io/y6fmg7s9m5t2. C?n ??i chi?u tr?c ti?p v? ?i?m judge l? x?p x?.
+- ??i chi?u B8: c? hai URL incident ?? quan s?t ??u xu?t hi?n nguy?n v?n trong answer; nh?n x?t URL c?a judge kh?ng ???c x?c nh?n qua ki?m tra chu?i n?y.
+- Kh?ng s?a ?i?m judge ho?c k?t qu? eval sau khi ??i chi?u. B3/B4/B5/B7 ??t 100 trong l??t n?y nh?ng m?t l??t kh?ng ??m b?o ?n ??nh trong live mode.
