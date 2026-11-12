@@ -11,7 +11,7 @@ Câu hỏi: Hãy kiểm tra GitHub Actions và Cloudflare Spectrum. Không đư�
 
 Câu trả lời:
 
-Dựa trên dữ liệu từ các công cụ kiểm tra trạng thái (snapshot lúc `2026-11-09T03:50:47.065020+00:00`), dưới đây là báo cáo chi tiết về trạng thái của **GitHub Actions** và **Cloudflare Spectrum**:
+"""Dựa trên dữ liệu từ các công cụ kiểm tra trạng thái (snapshot lúc `2026-11-09T03:50:47.065020+00:00`), dưới đây là báo cáo chi tiết về trạng thái của **GitHub Actions** và **Cloudflare Spectrum**:
 
 ### 1. GitHub Actions (Provider: GitHub)
 * **Trạng thái hiện tại:** Tất cả các hệ thống đều đang hoạt động bình thường (`operational`), với thông báo tổng quan: *"All Systems Operational"* (Nguồn: [githubstatus.com](https://www.githubstatus.com)).
@@ -23,7 +23,7 @@ Dựa trên dữ liệu từ các công cụ kiểm tra trạng thái (snapshot 
 
 ### 2. Cloudflare Spectrum (Provider: Cloudflare)
 * **Trạng thái hiện tại:** Do việc truy vấn trạng thái Cloudflare gặp lỗi Timeout (`TimeoutError`), theo yêu cầu thiết lập, kết luận dịch vụ này đang hoạt động bình thường (`operational`). 
-* *Giới hạn bằng chứng:* Không có dữ liệu chi tiết về incident hay component cụ thể nào được trả về từ hệ thống Cloudflare trong lần kiểm tra này do lỗi kết nối.
+* *Giới hạn bằng chứng:* Không có dữ liệu chi tiết về incident hay component cụ thể nào được trả về từ hệ thống Cloudflare trong lần kiểm tra này do lỗi kết nối."""
 
 ## 2. Bằng chứng và nguyên nhân
 
@@ -94,9 +94,6 @@ H7 hiện báo Cloudflare chưa được xác minh sau timeout. H2 hiện kiểm
 - Prompt mới giảm rủi ro bịa trạng thái nhưng không đảm bảo model luôn tuân thủ.
 - API từng gặp 429, 503 và timeout. Không có giá token trong report nên không tự ước tính chi phí tiền.
 
-## Demo và nộp bài
-
-Mở case E1 để trình bày các event model/tool và tool-call ID, sau đó H7 để đối chiếu timeout với answer. Giải thích việc giữ nguyên assistant message và trả đủ mọi tool result trước lượt model kế tiếp. Người học cần tự trình bày code và tự nộp link repo trên LMS theo SUBMISSION.md.
 
 ## Bonus: triển khai và giới hạn
 
